@@ -25,12 +25,9 @@ import java.util.Locale;
 
 public class FirstFragment extends Fragment {
 
-    private FragmentFirstBinding binding;
     ArrayList<Jornadas> listJornadas;
-
-    ArrayList<Integer> listHorariosFolgas;
     int equipesNecessarias = 0;
-
+    private FragmentFirstBinding binding;
     private Calendar selectedDateTime;
     private int TotalHoursInDay;
     private TextView result;
@@ -50,31 +47,31 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-         result = binding.txtResult;
+        result = binding.txtResult;
 
         binding.button1.setOnClickListener(v ->
-        {
-            listJornadas = new ArrayList<>();
-            listJornadas.add(new Jornadas(1,12,24));
-            listJornadas.add(new Jornadas(2,12,48));
-            int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
-            int horasFolga =  listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
-            TotalHoursInDay = horasTrabalho / listJornadas.size();
-            equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
-            binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
-        }
+                {
+                    listJornadas = new ArrayList<>();
+                    listJornadas.add(new Jornadas(1, 12, 24));
+                    listJornadas.add(new Jornadas(2, 12, 48));
+                    int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
+                    int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
+                    TotalHoursInDay = horasTrabalho / listJornadas.size();
+                    equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                }
         );
 
         binding.button2.setOnClickListener(v ->
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1,12,24));
-                    listJornadas.add(new Jornadas(2,12,72));
+                    listJornadas.add(new Jornadas(1, 12, 24));
+                    listJornadas.add(new Jornadas(2, 12, 72));
                     int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
-                    int horasFolga =  listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
+                    int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
                     TotalHoursInDay = horasTrabalho / listJornadas.size();
-                      equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+                    equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
                     binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
                 }
         );
@@ -83,11 +80,11 @@ public class FirstFragment extends Fragment {
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1,12,72));
+                    listJornadas.add(new Jornadas(1, 12, 72));
                     int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
-                    int horasFolga =  listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
+                    int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
                     TotalHoursInDay = horasTrabalho / listJornadas.size();
-                      equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+                    equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
                     binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
                 }
         );
@@ -97,11 +94,11 @@ public class FirstFragment extends Fragment {
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1,24,72));
+                    listJornadas.add(new Jornadas(1, 24, 72));
                     int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
-                    int horasFolga =  listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
+                    int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
                     TotalHoursInDay = horasTrabalho / listJornadas.size();
-                      equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+                    equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
                     binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
                 }
         );
@@ -111,23 +108,22 @@ public class FirstFragment extends Fragment {
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1,6,18));
+                    listJornadas.add(new Jornadas(1, 6, 18));
                     int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
-                    int horasFolga =  listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
+                    int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
                     TotalHoursInDay = horasTrabalho / listJornadas.size();
-                      equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+                    equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
                     binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
                 }
         );
-
-
 
 
         Button selectDateTimeButton = binding.buttonVerificarPrevisao;
 
         selectedDateTime = Calendar.getInstance();
 
-        selectDateTimeButton.setOnClickListener(v -> showDateTimePicker()); }
+        selectDateTimeButton.setOnClickListener(v -> showDateTimePicker());
+    }
 
     @Override
     public void onDestroyView() {
@@ -143,29 +139,29 @@ public class FirstFragment extends Fragment {
         Date dateTrEnd;
         Date dateFgEnd;
         for (int tu = 0; tu < qtdJornadas; tu++) {
-             contadorTurnos++;
+            contadorTurnos++;
 
-                               System.out.println("turno: "+jornadas.get(contadorJornadas).getTurno() + " qtdJornadas: "+qtdJornadas);
-                               dateTrEnd = addTimeToDate(dataInicial, jornadas.get(contadorJornadas).getHrTrabalho(), 0);
-                               horariosTrabalho.add(new Horario(totalVezesNodia == 1?  "Único" :  contadorTurnos +"º Turno", dataInicial, dateTrEnd));
-                               dateFgEnd =  addTimeToDate(dateTrEnd, jornadas.get(contadorJornadas).getHrFolgas(), 0);
-                               // dateStart = dateFgEnd;
-                               horariosFolga.add(new Horario( "Folga ", dateTrEnd, dateFgEnd));
-                              System.out.println("dataInicial: "+ dateFormat.format(dataInicial));
+            System.out.println("turno: " + jornadas.get(contadorJornadas).getTurno() + " qtdJornadas: " + qtdJornadas);
+            dateTrEnd = addTimeToDate(dataInicial, jornadas.get(contadorJornadas).getHrTrabalho(), 0);
+            horariosTrabalho.add(new Horario(totalVezesNodia == 1 ? "Único" : contadorTurnos + "º Turno", dataInicial, dateTrEnd));
+            dateFgEnd = addTimeToDate(dateTrEnd, jornadas.get(contadorJornadas).getHrFolgas(), 0);
+            // dateStart = dateFgEnd;
+            horariosFolga.add(new Horario("Folga ", dateTrEnd, dateFgEnd));
+            System.out.println("dataInicial: " + dateFormat.format(dataInicial));
             contadorJornadas++;
-            if(contadorJornadas == qtdJornadas){
+            if (contadorJornadas == qtdJornadas) {
                 contadorJornadas = 0;
             }
 
-            if(contadorTurnos == totalVezesNodia){
+            if (contadorTurnos == totalVezesNodia) {
                 contadorTurnos = 0;
             }
 
-          dataInicial = dateFgEnd;
+            dataInicial = dateFgEnd;
         }
 
 
-      return setHorariosToEquipe(horariosTrabalho, horariosFolga);
+        return setHorariosToEquipe(horariosTrabalho, horariosFolga);
     }
 
     private Date addTimeToDate(Date date, int hoursToAdd, int minutesToAdd) {
@@ -180,7 +176,7 @@ public class FirstFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private  Equipe setHorariosToEquipe(List<Horario> horariosTrabalho, List<Horario> horariosFolga) {
+    private Equipe setHorariosToEquipe(List<Horario> horariosTrabalho, List<Horario> horariosFolga) {
 
 
         Equipe equipe = new Equipe();
@@ -196,21 +192,11 @@ public class FirstFragment extends Fragment {
         return equipe;
     }
 
-    private   int calcularEquipesParaFolga(int horasTrabalho, int horasFolga, int qtdVezesTrabalhou) {
+    private int calcularEquipesParaFolga(int horasTrabalho, int horasFolga, int qtdVezesTrabalhou) {
 
         // calcula o total de horas de trabalho por dia
         int TotalHoursInDay = horasTrabalho / qtdVezesTrabalhou;
-        int TotalDaysInCiclo = (horasTrabalho + horasFolga) / 24;
-        System.out.println("horasTrabalho: "+horasTrabalho);
-        System.out.println("horasFolga: "+horasFolga);
-        System.out.println("TotalHoursInDay: "+TotalHoursInDay);
-        System.out.println("TotalDaysInCiclo: "+TotalDaysInCiclo);
-
-        // Calcula a diferença entre horas de folga e horas de trabalho da equipe original
         int diferencaHoras = horasFolga + horasTrabalho;
-
-        // Se a diferença for negativa, significa que a equipe original já trabalha mais do que folga,
-        // então não são necessárias equipes adicionais
         if (diferencaHoras <= 0) {
             return 0;
         }
@@ -255,44 +241,44 @@ public class FirstFragment extends Fragment {
         String formattedDateTime = dateFormat.format(selectedDateTime.getTime());
 
 
-         System.out.println(formattedDateTime);
-         Date starDate = selectedDateTime.getTime();
-         StringBuilder st = new StringBuilder();
+        System.out.println(formattedDateTime);
+        Date starDate = selectedDateTime.getTime();
+        StringBuilder st = new StringBuilder();
 
-        int totalVezesNodia = 24 /TotalHoursInDay;
+        int totalVezesNodia = 24 / TotalHoursInDay;
         int qtdJornadas = listJornadas.size();
-        int contadorJornadas =  0;
-        int contadorTurnos =  0;
+        int contadorJornadas = 0;
+        int contadorTurnos = 0;
 
-         for (int i = 0; i < equipesNecessarias; i++) {
+        for (int i = 0; i < equipesNecessarias; i++) {
 
-               Equipe eq = getJornadaEquipe(listJornadas,   starDate, totalVezesNodia,  qtdJornadas, contadorJornadas, contadorTurnos);
-             st.append("\nEquipe: ").append(numberToLetter(i + 1));
-             st.append("\nHorários de trabalho: ");
-             System.out.println("Equipe: " +numberToLetter(i + 1));
-             System.out.println("  Horários de trabalho: ");
-             for (Horario horario : eq.horariosTrabalho) {
-                 System.out.println("    " + horario);
-                 st.append("\n");
-                 st.append(horario);
-             }
-             if(qtdJornadas > 1){
-                 contadorJornadas++;
-             }
-                 if(contadorJornadas == qtdJornadas){
-                     contadorJornadas = 0;
-                 }
+            Equipe eq = getJornadaEquipe(listJornadas, starDate, totalVezesNodia, qtdJornadas, contadorJornadas, contadorTurnos);
+            st.append("\nEquipe: ").append(numberToLetter(i + 1));
+            st.append("\nHorários de trabalho: ");
+            System.out.println("Equipe: " + numberToLetter(i + 1));
+            System.out.println("  Horários de trabalho: ");
+            for (Horario horario : eq.horariosTrabalho) {
+                System.out.println("    " + horario);
+                st.append("\n");
+                st.append(horario);
+            }
+            if (qtdJornadas > 1) {
+                contadorJornadas++;
+            }
+            if (contadorJornadas == qtdJornadas) {
+                contadorJornadas = 0;
+            }
 
 
-          //   }
-             contadorTurnos++;
-             if(contadorTurnos == (totalVezesNodia)){
-                 contadorTurnos = 0;
-             }
+            //   }
+            contadorTurnos++;
+            if (contadorTurnos == (totalVezesNodia)) {
+                contadorTurnos = 0;
+            }
 
-               starDate = eq.horariosTrabalho.get(0).horaFim;
+            starDate = eq.horariosTrabalho.get(0).horaFim;
 
-         }
+        }
 
         result.setText(st.toString());
 
