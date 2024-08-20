@@ -268,9 +268,6 @@ public class FirstFragment extends Fragment {
             if (contadorJornadas == qtdJornadas) {
                 contadorJornadas = 0;
             }
-
-
-            //   }
             contadorTurnos++;
             if (contadorTurnos == (totalVezesNodia)) {
                 contadorTurnos = 0;
