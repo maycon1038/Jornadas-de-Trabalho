@@ -280,13 +280,13 @@ public class FirstFragment extends Fragment {
 
         for (int i = 0; i < diasNecessarios; i++) {
             Date data = addDayToDate(selectedDateTime.getTime(), i);
-            resultText.append("\nData: " ).append(dateFormat.format(data));
+            resultText.append("\n").append(dateFormat.format(data));
             listDatas.forEach(datas ->
             {
                 if (isSameDay(datas.getDataTimeInicio(), data)) {
-                    resultText.append("\nEquipe: " ).append(datas.getEquipe());
-                    resultText.append("\nHorários de trabalho: \n" );
-                    resultText.append(datas).append("\n" );
+                    resultText.append("\n").append("Equipe").append(": " ).append(datas.getEquipe()).append(" - " )
+                            .append(datas.getNameTurno()).append(": " )
+                            .append(datas.getDataTimeInicioFormat()).append(" até ").append(datas.getDataTimeFimFormat());
                 }
 
             });

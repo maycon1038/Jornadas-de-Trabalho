@@ -39,6 +39,18 @@ public class Datas {
         return dataTimeInicio;
     }
 
+    public String getDataTimeInicioFormat() {
+        String myFormat = "HH:mm"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR" ));
+        return sdf.format(dataTimeInicio);
+    }
+
+    public String getDataTimeFimFormat() {
+        String myFormat = "HH:mm"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR" ));
+        return sdf.format(dataTimeFim);
+    }
+
     public void setDataTimeInicio(Date dataTimeInicio) {
         this.dataTimeInicio = dataTimeInicio;
     }
