@@ -4,20 +4,23 @@ import java.util.Date;
 import java.util.Locale;
 
 public class Horario {
-    String turno;
-    Date horaInicio;
-    Date horaFim;
+      int turno;
+      Date horaInicio;
+      Date horaFim;
 
-    public Horario(String turno, Date horaInicio, Date horaFim) {
+      String nomeTurno;
+
+    public Horario(String nomeTurno, int turno, Date horaInicio, Date horaFim) {
         this.turno = turno;
         this.horaInicio = horaInicio;
         this.horaFim = horaFim;
+        this.nomeTurno = nomeTurno;
     }
 
     @Override
     public String toString() {
         String myFormat = "dd/MM/yyyy HH:mm"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR"));
-        return   this.turno + " - " + sdf.format(horaInicio) + " até " + sdf.format(horaFim);
+        return   this.nomeTurno + " - " + sdf.format(horaInicio) + " até " + sdf.format(horaFim);
     }
 }
