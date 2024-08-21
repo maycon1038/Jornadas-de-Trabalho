@@ -68,8 +68,8 @@ public class FirstFragment extends Fragment {
                     listJornadas = new ArrayList<>();
                     listJornadas.add(new Jornadas(1, 12, 24));
                     listJornadas.add(new Jornadas(2, 12, 48));
-                    myJornada = "12/24-12/48";
-                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                    myJornada = "1 12/24 - 2 12/48";
+                    showDateTimePicker();
                 }
         );
 
@@ -79,8 +79,8 @@ public class FirstFragment extends Fragment {
                     listJornadas = new ArrayList<>();
                     listJornadas.add(new Jornadas(1, 12, 24));
                     listJornadas.add(new Jornadas(2, 12, 72));
-                    myJornada = "12/24-12/72";
-                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                    myJornada = "1 12/24 - 2 12/72";
+                    showDateTimePicker();
                 }
         );
 
@@ -89,8 +89,9 @@ public class FirstFragment extends Fragment {
                 {
                     listJornadas = new ArrayList<>();
                     listJornadas.add(new Jornadas(1, 12, 72));
-                    myJornada = "12/72";
-                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                    listJornadas.add(new Jornadas(2, 12, 72));
+                    myJornada = "1 12/72 - 2 12/72";
+                    showDateTimePicker();
                 }
         );
 
@@ -99,9 +100,10 @@ public class FirstFragment extends Fragment {
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1, 24, 72));
+                    listJornadas.add(new Jornadas(0, 24, 72));
                     myJornada = "24/72";
-                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                    showDateTimePicker();
+
                 }
         );
 
@@ -110,18 +112,15 @@ public class FirstFragment extends Fragment {
 
                 {
                     listJornadas = new ArrayList<>();
-                    listJornadas.add(new Jornadas(1, 6, 18));
+                    listJornadas.add(new Jornadas(0, 6, 18));
                     myJornada = "6/18";
-                    binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+                    showDateTimePicker();
+
                 }
         );
 
-
-        Button selectDateTimeButton = binding.buttonVerificarPrevisao;
-
         selectedDateTime = Calendar.getInstance();
 
-        selectDateTimeButton.setOnClickListener(v -> showDateTimePicker());
     }
 
     @Override
@@ -239,6 +238,8 @@ public class FirstFragment extends Fragment {
         System.out.println(formattedDateTime);
 
         Date startDate = selectedDateTime.getTime();
+
+
         StringBuilder resultText = new StringBuilder();
         int horasTrabalho = listJornadas.stream().mapToInt(Jornadas::getHrTrabalho).sum(); // 12 horas + 12 horas
         int horasFolga = listJornadas.stream().mapToInt(Jornadas::getHrFolgas).sum(); // 24 horas + 72 horas
@@ -246,38 +247,48 @@ public class FirstFragment extends Fragment {
         equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
         int diasNecessarios = (horasTrabalho + horasFolga) / 24;
         int totalTurnosNoDia = 24 / TotalHoursInDay;
-        int qtdJornadas = listJornadas.size();
-
-        int indiceJornada = 0;
-        int indiceTurno = 0;
+        binding.txtEquipeResult.setText(String.valueOf(equipesNecessarias));
+        binding.buttonVerificarPrevisao.setText(myJornada);
+        int indiceEquipe = 1;
         ArrayList<Datas> listDatas = new ArrayList<>();
-        for (int i = 0; i < equipesNecessarias; i++) {
 
-            Equipe equipe = getJornadaEquipe(listJornadas, startDate, totalTurnosNoDia, qtdJornadas, indiceJornada, indiceTurno);
+        for (int i = 0; i < diasNecessarios; i++) {
 
-            String eq = numberToLetter(i + 1);
-            for (Horario horario : equipe.horariosTrabalho) {
-                String nomeTurno = totalTurnosNoDia == 1 ? "Único" : horario.turno + "º Turno";
-                Datas data = new Datas(myJornada, horario.turno, eq);
-                data.setNameTurno(nomeTurno);
-                data.setDataTimeInicio(horario.horaInicio);
-                data.setDataTimeFim(horario.horaFim);
-                listDatas.add(data);
-            }
-            // Atualiza índices para a próxima iteração
-            indiceJornada = (indiceJornada + 1) % qtdJornadas;
-            indiceTurno = (indiceTurno + 1) % totalTurnosNoDia;
+            for (int t = 1; t <= totalTurnosNoDia; t++) {
 
-            startDate = equipe.horariosTrabalho.get(0).horaFim;
-            if (equipeJaAdicionada(listDatas, startDate)) {
-                indiceJornada = (indiceJornada + 1) % qtdJornadas;
-                indiceTurno = (indiceTurno + 1) % totalTurnosNoDia;
+
+                if(listJornadas.size() == 1 && t == 1){
+                    String eq = numberToLetter(indiceEquipe);
+                    String nomeTurno = totalTurnosNoDia == 1 ? "Único" : t + "º Turno";
+                    Datas data = new Datas(myJornada, t, eq);
+                    data.setNameTurno(nomeTurno);
+                    data.setDataTimeInicio(startDate);
+                    data.setDataTimeFim(addTimeToDate(startDate, TotalHoursInDay, 0));
+                    //prencher dados do 1 turno para cada equipe
+                    if (!equipeJaAdicionada(listDatas, startDate)) {
+                        listDatas.add(data);
+                    }
+
+                }else if(listJornadas.size() == totalTurnosNoDia){
+                    String eq = numberToLetter(indiceEquipe);
+                    String nomeTurno = totalTurnosNoDia == 1 ? "Único" : t + "º Turno";
+                    Datas data = new Datas(myJornada, t, eq);
+                    data.setNameTurno(nomeTurno);
+                    data.setDataTimeInicio(startDate);
+                    data.setDataTimeFim(addTimeToDate(startDate, TotalHoursInDay, 0));
+                    if (!equipeJaAdicionada(listDatas, startDate)) {
+                        listDatas.add(data);
+                    }
+
+                }
+
+
                 startDate = addTimeToDate(startDate, TotalHoursInDay, 0);
+                indiceEquipe = (indiceEquipe + 1) % (equipesNecessarias + 1);
+
             }
 
         }
-
-
         for (int i = 0; i < diasNecessarios; i++) {
             Date data = addDayToDate(selectedDateTime.getTime(), i);
             resultText.append("\n").append(dateFormat.format(data));
