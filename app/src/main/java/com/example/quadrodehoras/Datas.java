@@ -7,14 +7,33 @@ import java.util.Locale;
 public class Datas {
 
 
-
     private Date dataTimeInicio;
 
     private String jornada;
 
 
-
     private Date dataTimeFim;
+    private int turno;
+    private String equipe;
+
+    private String nameTurno;
+
+    public String getNameTurno() {
+        return nameTurno;
+    }
+
+    public void setNameTurno(String nameTurno) {
+        this.nameTurno = nameTurno;
+    }
+
+    public Datas(String jornada, int turno, String equipe) {
+        this.jornada = jornada;
+        this.turno = turno;
+        this.equipe = equipe;
+    }
+
+    public Datas() {
+    }
 
     public Date getDataTimeInicio() {
         return dataTimeInicio;
@@ -56,23 +75,10 @@ public class Datas {
         this.equipe = equipe;
     }
 
-    private int turno;
-
-    public Datas(String jornada, int turno, String equipe) {
-        this.jornada = jornada;
-        this.turno = turno;
-        this.equipe = equipe;
-    }
-
-    private String equipe;
-
-    public Datas() {
-    }
-
     @Override
     public String toString() {
         String myFormat = "dd/MM/yyyy HH:mm"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR"));
-        return   this.turno + " - " + sdf.format(dataTimeInicio) + " até " + sdf.format(dataTimeFim);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR" ));
+        return this.nameTurno + " - " + sdf.format(dataTimeInicio) + " até " + sdf.format(dataTimeFim);
     }
 }
