@@ -43,10 +43,8 @@ public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeView
         holder.binding.txtTitle.setText("Equipe: " + equipe.jornada);
 
         StringBuilder st = new StringBuilder();
-
-        st.append("\nHorários de trabalho: ");
+        st.append("Horários de trabalho:");
         for (Horario horario : equipe.horariosTrabalho) {
-            System.out.println("    " + horario);
             st.append("\n");
             st.append(horario);
         }
