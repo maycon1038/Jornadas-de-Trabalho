@@ -117,19 +117,24 @@ public class FirstFragment extends Fragment {
             System.out.println("formattedDateTime: " +  formattedDateTime);
             System.out.println("adapter.getJornadasSelected(): " +  adapter.getJornadasSelected().size());
 
+
+            int horasTrabalho = adapter.getJornadasSelected().stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
+            TotalHoursInDay = horasTrabalho / adapter.getJornadasSelected().size();
+            int totalTurnosNoDia = 24 / TotalHoursInDay;
+
               Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(equipeAdapter.getItemCount() + 1), startDate);
-             int indiceJornada = 0;
-             int qtdJornadas = (adapter.getJornadasSelected().size() + 1);
+             int indiceJornada = 1;
+             int qtdJornadas = (adapter.getJornadasSelected().size());
 
             for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
-                indiceJornada = (indiceJornada + 1) % qtdJornadas; // Incrementa e mantém dentro do limite
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
-                String nomeTurno = qtdJornadas == 1 ? "Único" : indiceJornada + "º Turno";
+                String nomeTurno = totalTurnosNoDia == 1 ? "Único" : indiceJornada + "º Turno";
                 equipe.horariosTrabalho.add(new Horario(nomeTurno, indiceJornada, startDate, dataFimTrabalho));
                 Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
                 equipe.horariosFolga.add(new Horario(nomeTurno, indiceJornada, dataFimTrabalho, dataFimFolga));
                 System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
                 startDate = dataFimFolga;
+                indiceJornada = (indiceJornada + 1) % qtdJornadas; // Incrementa e mantém dentro do limite
             }
             listEquipes.add(equipe);
             equipeAdapter.notifyItemInserted(listEquipes.size() - 1); // Notifica o adapter da mudança
