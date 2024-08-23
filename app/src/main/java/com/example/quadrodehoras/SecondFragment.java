@@ -38,20 +38,27 @@ public class SecondFragment extends Fragment {
         ArrayList<Jornada> jornada  = new ArrayList<>();
 
 
-        novaJornada = new Jornada(numberToLetter(jornada.size() + 1), 12, 24);
+        novaJornada = new Jornada(numberToLetter(1), 12, 24);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(jornada.size() + 2), 12, 48);
+        novaJornada = new Jornada(numberToLetter(2), 12, 48);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(jornada.size() + 3), 12, 72);
+        novaJornada = new Jornada(numberToLetter(3), 12, 72);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(jornada.size() + 4), 8, 16);
+        novaJornada = new Jornada(numberToLetter(4), 8, 16);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(jornada.size() + 5), 6, 18);
+        novaJornada = new Jornada(numberToLetter(5), 6, 18);
         jornada.add(novaJornada);
+
+
+        novaJornada = new Jornada(numberToLetter(6), 24, 72);
+        jornada.add(novaJornada);
+        novaJornada = new Jornada(numberToLetter(7), 12, 72);
+        jornada.add(novaJornada);
+
 
 
         jornadaAdapter = new JornadaAdapter(jornada); // Inicializa o adapter fora do listener

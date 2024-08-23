@@ -124,11 +124,11 @@ public class FirstFragment extends Fragment {
 
               Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(equipeAdapter.getItemCount() + 1), startDate);
              int indiceJornada = 1;
-             int qtdJornadas = (adapter.getJornadasSelected().size());
+             int qtdJornadas = (adapter.getJornadasSelected().size() + 1);
 
             for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
-                String nomeTurno = totalTurnosNoDia == 1 ? "Único" : indiceJornada + "º Turno";
+                String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : indiceJornada + "º Turno";
                 equipe.horariosTrabalho.add(new Horario(nomeTurno, indiceJornada, startDate, dataFimTrabalho));
                 Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
                 equipe.horariosFolga.add(new Horario(nomeTurno, indiceJornada, dataFimTrabalho, dataFimFolga));
