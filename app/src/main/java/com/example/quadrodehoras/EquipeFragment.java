@@ -118,11 +118,7 @@ public class EquipeFragment extends Fragment {
             int totalTurnosNoDia = 24 / TotalHoursInDay;
             String idDocJonada = concatenarIdsJornadas(jornadasSelecionadas);
             System.out.println("idsjns: " + idDocJonada);
-            Jornadas jaExiste = equipeJaAdicionadaInJornadaMesmaData(listJnds, startDate, idDocJonada);
-            if(jaExiste != null){
-                Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+
              int qtdEquipe = contarJornadasComMesmoId(listJnds,  idDocJonada) + 1;
             equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
             if(qtdEquipe >= equipesNecessarias) {
@@ -132,11 +128,14 @@ public class EquipeFragment extends Fragment {
             }
 
             Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(qtdEquipe) + " ("+ idDocJonada +")", startDate);
-            Jornadas Jns = new Jornadas(idDocJonada, equipe.equipe, startDate, (ArrayList<Jornada>) jornadasSelecionadas);
-            listJnds.add(Jns);
 
-             int indiceJornada = 1;
-             int qtdJornadas = (jornadasSelecionadas.size() + 1);
+            if(!listEquipes.isEmpty() && existeConflitoHorario(listEquipes, startDate, horasTrabalho + horasFolga)){
+                Toast.makeText(requireContext(), "Existe um conflito de horário.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int indiceJornada = 1;
+            int qtdJornadas = (jornadasSelecionadas.size() + 1);
 
             for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
@@ -145,13 +144,42 @@ public class EquipeFragment extends Fragment {
                 Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
                 equipe.horariosFolga.add(new Horario(nomeTurno, indiceJornada, dataFimTrabalho, dataFimFolga));
                 //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
-                startDate = dataFimFolga;
+                 startDate = dataFimFolga;
                 indiceJornada = (indiceJornada + 1) % qtdJornadas; // Incrementa e mantém dentro do limite
             }
+            Jornadas jaExiste = equipeJaAdicionadaInJornadaMesmaData(listJnds, startDate, idDocJonada);
+            if(jaExiste != null){
+                Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+          //  System.out.println("existeConflitoHorario: " + existeConflitoHorario(equipe));
+            Jornadas Jns = new Jornadas(idDocJonada, equipe.equipe, startDate, (ArrayList<Jornada>) jornadasSelecionadas);
+            listJnds.add(Jns);
             listEquipes.add(equipe);
             equipeAdapter.notifyItemInserted(listEquipes.size() - 1); // Notifica o adapter da mudança
             dialog.dismiss();
         });
+    }
+
+    public boolean existeConflitoHorario(ArrayList<Equipe> equipes, Date dataStart2, int qtdHorasTrabalhoAndFolga) {
+
+        Date dataStart = equipes.get(0).horariosTrabalho.get(0).horaInicio;
+         do{
+             for (Equipe equipe: equipes) {
+                  dataStart = equipe.horariosTrabalho.get(0).horaInicio;
+                 dataStart = addTimeToDate(dataStart,qtdHorasTrabalhoAndFolga,0 );
+                 String myFormat = "dd/MM/yyyy HH:mm"; //In which you need put here
+                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR"));
+                 System.out.println("dataStart1: " + sdf.format(dataStart) + "dataStart2: " + sdf.format(dataStart2));
+                 if(dataStart.equals(dataStart2)){
+                     return true;
+                 }
+             }
+
+
+         }while (dataStart2.after(dataStart));
+        return false; // Nenhum conflito encontrado
     }
 
     public String concatenarIdsJornadas(List<Jornada> jornadasSelecionadas) {
