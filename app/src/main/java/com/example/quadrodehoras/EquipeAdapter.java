@@ -6,11 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.quadrodehoras.databinding.ModelEquipeItemBinding; // Substitua pelo caminho correto do seu layout
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeViewHolder> {
 
@@ -40,7 +36,7 @@ public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeView
     public void onBindViewHolder(@NonNull EquipeViewHolder holder, int position) {
         Equipe equipe = equipes.get(position);
         // Preencha os elementos do layout com os dados da equipe
-        holder.binding.txtTitle.setText("Equipe: " + equipe.jornada);
+        holder.binding.txtTitle.setText("Equipe: " + equipe.equipe);
 
         StringBuilder st = new StringBuilder();
         st.append("Horários de trabalho:");

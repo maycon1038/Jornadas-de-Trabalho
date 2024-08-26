@@ -3,15 +3,13 @@ package com.example.quadrodehoras;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -30,11 +28,10 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class FirstFragment extends Fragment {
+public class EquipeFragment extends Fragment {
 
     ArrayList<Jornada> listJornadas;
     int equipesNecessarias = 0;
-    ArrayList<Datas> Datas = new ArrayList<>();
     private FragmentFirstBinding binding;
     private Calendar selectedDateTime;
     private int TotalHoursInDay;
@@ -44,6 +41,9 @@ public class FirstFragment extends Fragment {
     ArrayList<Equipe> listEquipes = new ArrayList<>();
     private RecyclerView recyclerView;
     private EquipeAdapter equipeAdapter;
+
+
+    ArrayList<Jornadas> listJnds;
 
 
     // Método auxiliar para comparar se duas datas representam o mesmo dia
@@ -71,7 +71,7 @@ public class FirstFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        listJnds = new ArrayList<>();
        // result = binding.txtResult;
         assert getArguments() != null;
         listJornadas = getArguments().getParcelableArrayList("Jornada");
@@ -90,7 +90,7 @@ public class FirstFragment extends Fragment {
         selectedDateTime = Calendar.getInstance();
 
         binding.buttonCadastrarJornada.setOnClickListener(v ->
-                NavHostFragment.findNavController(FirstFragment.this)
+                NavHostFragment.findNavController(EquipeFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment)
         );
 
@@ -109,22 +109,34 @@ public class FirstFragment extends Fragment {
         dialog.show();
         dialog.findViewById(R.id.button_selec_data).setOnClickListener(v1 -> showDateTimePicker());
         dialog.findViewById(R.id.button_add_Equipe).setOnClickListener(v13 -> {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
             Date startDate = selectedDateTime.getTime();
-            String formattedDateTime = dateFormat.format(startDate);
-            System.out.println(formattedDateTime);
-            System.out.println("formattedDateTime: " +  formattedDateTime);
-            System.out.println("adapter.getJornadasSelected(): " +  adapter.getJornadasSelected().size());
-
-
-            int horasTrabalho = adapter.getJornadasSelected().stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
-            TotalHoursInDay = horasTrabalho / adapter.getJornadasSelected().size();
+            List<Jornada> jornadasSelecionadas = adapter.getJornadasSelected();
+            int horasTrabalho =jornadasSelecionadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
+            int horasFolga =jornadasSelecionadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 12 horas + 12 horas
+            TotalHoursInDay = horasTrabalho / jornadasSelecionadas.size();
             int totalTurnosNoDia = 24 / TotalHoursInDay;
+            String idDocJonada = concatenarIdsJornadas(jornadasSelecionadas);
+            System.out.println("idsjns: " + idDocJonada);
+            Jornadas jaExiste = equipeJaAdicionadaInJornadaMesmaData(listJnds, startDate, idDocJonada);
+            if(jaExiste != null){
+                Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+             int qtdEquipe = contarJornadasComMesmoId(listJnds,  idDocJonada) + 1;
+            equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+            if(qtdEquipe >= equipesNecessarias) {
 
-              Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(equipeAdapter.getItemCount() + 1), startDate);
+                Toast.makeText(requireContext(), "Você já possui a quantidade máxima de equipes", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(qtdEquipe) + " ("+ idDocJonada +")", startDate);
+            Jornadas Jns = new Jornadas(idDocJonada, equipe.equipe, startDate, (ArrayList<Jornada>) jornadasSelecionadas);
+            listJnds.add(Jns);
+
              int indiceJornada = 1;
-             int qtdJornadas = (adapter.getJornadasSelected().size() + 1);
+             int qtdJornadas = (jornadasSelecionadas.size() + 1);
 
             for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
@@ -132,7 +144,7 @@ public class FirstFragment extends Fragment {
                 equipe.horariosTrabalho.add(new Horario(nomeTurno, indiceJornada, startDate, dataFimTrabalho));
                 Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
                 equipe.horariosFolga.add(new Horario(nomeTurno, indiceJornada, dataFimTrabalho, dataFimFolga));
-                System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
+                //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
                 startDate = dataFimFolga;
                 indiceJornada = (indiceJornada + 1) % qtdJornadas; // Incrementa e mantém dentro do limite
             }
@@ -140,6 +152,23 @@ public class FirstFragment extends Fragment {
             equipeAdapter.notifyItemInserted(listEquipes.size() - 1); // Notifica o adapter da mudança
             dialog.dismiss();
         });
+    }
+
+    public String concatenarIdsJornadas(List<Jornada> jornadasSelecionadas) {
+        StringBuilder idsConcatenados = new StringBuilder();
+        for (Jornada jornada : jornadasSelecionadas) {
+            System.out.println("jornada: " + jornada.getIdDoc());
+            idsConcatenados.append(jornada.getHrTrabalho());
+            idsConcatenados.append("/");
+            idsConcatenados.append(jornada.getHrFolgas());
+            idsConcatenados.append(" - ");
+        }
+        String ultimosTresChars = idsConcatenados.substring(idsConcatenados.length() - 3);
+        // Remove o último " / " se houver
+        if (ultimosTresChars.equals(" - ")) {
+            idsConcatenados.delete(idsConcatenados.length() - 3, idsConcatenados.length());
+        }
+        return idsConcatenados.toString();
     }
 
     private void updateDateTimeTextView() {
@@ -160,61 +189,6 @@ public class FirstFragment extends Fragment {
         // binding.buttonVerificarPrevisao.setText(myJornada);
 
         int indiceEquipe = 1;
-        ArrayList<Datas> listDatas = new ArrayList<>();
-
-        for (int i = 0; i < diasNecessarios; i++) {
-
-            for (int t = 1; t <= totalTurnosNoDia; t++) {
-
-
-                if(listJornadas.size() == 1 && t == 1){
-                    String eq = numberToLetter(indiceEquipe);
-                    String nomeTurno = totalTurnosNoDia == 1 ? "Único" : t + "º Turno";
-                    Datas data = new Datas(myJornada, t, eq);
-                    data.setNameTurno(nomeTurno);
-                    data.setDataTimeInicio(startDate);
-                    data.setDataTimeFim(addTimeToDate(startDate, TotalHoursInDay, 0));
-                    //prencher dados do 1 turno para cada equipe
-                    if (!equipeJaAdicionada(listDatas, startDate)) {
-                        listDatas.add(data);
-                    }
-
-                }else if(listJornadas.size() == totalTurnosNoDia){
-                    String eq = numberToLetter(indiceEquipe);
-                    String nomeTurno = totalTurnosNoDia == 1 ? "Único" : t + "º Turno";
-                    Datas data = new Datas(myJornada, t, eq);
-                    data.setNameTurno(nomeTurno);
-                    data.setDataTimeInicio(startDate);
-                    data.setDataTimeFim(addTimeToDate(startDate, TotalHoursInDay, 0));
-                    if (!equipeJaAdicionada(listDatas, startDate)) {
-                        listDatas.add(data);
-                    }
-
-                }
-
-
-                startDate = addTimeToDate(startDate, TotalHoursInDay, 0);
-                indiceEquipe = (indiceEquipe + 1) % (equipesNecessarias);
-
-            }
-
-        }
-        for (int i = 0; i < diasNecessarios; i++) {
-            Date data = addDayToDate(selectedDateTime.getTime(), i);
-            resultText.append("\n").append(dateFormat.format(data));
-            listDatas.forEach(datas ->
-            {
-                if (isSameDay(datas.getDataTimeInicio(), data)) {
-                    resultText.append("\n").append("Equipe").append(": " ).append(datas.getEquipe()).append(" - " )
-                            .append(datas.getNameTurno()).append(": " )
-                            .append(datas.getDataTimeInicioFormat()).append(" até ").append(datas.getDataTimeFimFormat());
-                }
-
-            });
-
-        }
-
-
 
         result.setText(resultText.toString());
     }
@@ -297,14 +271,25 @@ public class FirstFragment extends Fragment {
         System.out.println(formattedDateTime);
     }
 
-    private boolean equipeJaAdicionada(List<Datas> listDatas, Date data) {
-        for (Datas dataEquipe : listDatas) {
-            if (dataEquipe.getDataTimeInicio().equals(data)) {
-                return true; // Equipe já adicionada
+    private Jornadas equipeJaAdicionadaInJornadaMesmaData(List<Jornadas> listJornadas, Date data, String idDocJornada) {
+        // Equipe já adicionada
+        if(listJornadas == null) return null;
+        return listJornadas.stream().filter(jornadas -> jornadas.getDataInicio().equals(data) && jornadas.getName().equals(idDocJornada) ).findFirst().orElse(null);
+        // Equipe não encontrada
+    }
+
+
+
+    private int contarJornadasComMesmoId(List<Jornadas> listJornadas, String idDocJornada) {
+        int count = 0;
+        for (Jornadas jornada : listJornadas) {
+            if (jornada.getName().equals(idDocJornada)) {
+                count++;
             }
         }
-        return false; // Equipe não encontrada
+        return count;
     }
+
 
 
     private String numberToLetter(int number) {

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.example.quadrodehoras.FirstFragment"
+        android:name="com.example.quadrodehoras.EquipeFragment"
         android:label="Equipes"
         tools:layout="@layout/fragment_first">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.example.quadrodehoras.SecondFragment"
+        android:name="com.example.quadrodehoras.JornadaFragment"
         android:label="Cadastro de Jornadas"
         tools:layout="@layout/fragment_second">
 

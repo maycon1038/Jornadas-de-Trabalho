@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quadrodehoras.databinding.FragmentSecondBinding;
 
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SecondFragment extends Fragment {
+public class JornadaFragment extends Fragment {
 
     private FragmentSecondBinding binding;
     private Jornada novaJornada;
@@ -90,7 +89,7 @@ public class SecondFragment extends Fragment {
             // Validação dos campos de entrada (opcional, mas recomendado)
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("Jornada", jornada);
-            NavHostFragment.findNavController(SecondFragment.this)
+            NavHostFragment.findNavController(JornadaFragment.this)
                     .navigate(R.id.action_SecondFragment_to_FirstFragment, bundle);
 
         });

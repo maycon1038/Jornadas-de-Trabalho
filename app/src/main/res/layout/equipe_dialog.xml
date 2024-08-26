@@ -13,10 +13,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Selecionar data do início do serviço"
+            android:text="Data e Horas do início do serviço do 1º Turno."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_ajuda" />
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
@@ -29,7 +29,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/button_selec_data"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_ajuda"
@@ -51,6 +51,6 @@
             android:text="Cadastrar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_selec_data" />
+            app:layout_constraintTop_toBottomOf="@+id/recycler_ajuda" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

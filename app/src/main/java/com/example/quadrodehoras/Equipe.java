@@ -7,15 +7,15 @@ import java.util.List;
 public class Equipe {
 
       int id;
-      String jornada;
+      String equipe;
 
     private Date dateStart;
     List<Horario> horariosTrabalho = new ArrayList<>();
     List<Horario> horariosFolga = new ArrayList<>();
 
-    public Equipe(int id, String jornada, Date dateStart) {
+    public Equipe(int id, String equipe, Date dateStart) {
         this.id = id;
-        this.jornada = jornada;
+        this.equipe = equipe;
         this.dateStart = dateStart;
     }
 }
