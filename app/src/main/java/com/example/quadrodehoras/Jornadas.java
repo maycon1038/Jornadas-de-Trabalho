@@ -20,30 +20,11 @@ public class Jornadas {
         this.name = name;
     }
 
-    public String getEquipe() {
-        return equipe;
-    }
-
-    public void setEquipe(String equipe) {
-        this.equipe = equipe;
-    }
-
 
     public Date getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Date dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public ArrayList<Jornada> getListJornadas() {
-        return listJornadas;
-    }
-
-    public void setListJornadas(ArrayList<Jornada> listJornadas) {
-        this.listJornadas = listJornadas;
-    }
 
     public Jornadas(String name, String equipe, Date dataInicio, ArrayList<Jornada> listJornadas) {
         this.idDoc =  GeradorIdDoc.gerarIdDocUnico();

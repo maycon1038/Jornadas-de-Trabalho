@@ -13,9 +13,6 @@ public class Jornada implements Parcelable {
         return idDoc;
     }
 
-    public void setIdDoc(String idDoc) {
-        this.idDoc = idDoc;
-    }
 
     public Jornada(String idDoc, int hrTrabalho, int hrFolgas) {
         this.idDoc = idDoc;

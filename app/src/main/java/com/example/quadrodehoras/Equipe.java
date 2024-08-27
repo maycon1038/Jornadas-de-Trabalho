@@ -9,7 +9,7 @@ public class Equipe {
       int id;
       String equipe;
 
-    private Date dateStart;
+      Date dateStart;
     List<Horario> horariosTrabalho = new ArrayList<>();
     List<Horario> horariosFolga = new ArrayList<>();
 
