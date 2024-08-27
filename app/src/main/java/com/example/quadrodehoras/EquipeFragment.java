@@ -198,29 +198,6 @@ public class EquipeFragment extends Fragment {
         }
         return idsConcatenados.toString();
     }
-
-    private void updateDateTimeTextView() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String formattedDateTime = dateFormat.format(selectedDateTime.getTime());
-        System.out.println(formattedDateTime);
-
-        Date startDate = selectedDateTime.getTime();
-
-
-        StringBuilder resultText = new StringBuilder();
-        int horasTrabalho = listJornadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
-        int horasFolga = listJornadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 24 horas + 72 horas
-        TotalHoursInDay = horasTrabalho / listJornadas.size();
-        equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
-        int diasNecessarios = (horasTrabalho + horasFolga) / 24;
-        int totalTurnosNoDia = 24 / TotalHoursInDay;
-        // binding.buttonVerificarPrevisao.setText(myJornada);
-
-        int indiceEquipe = 1;
-
-        result.setText(resultText.toString());
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

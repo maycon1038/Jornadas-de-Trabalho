@@ -44,6 +44,11 @@ public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeView
             st.append("\n");
             st.append(horario);
         }
+        st.append("\nHorários de Folga:");
+        for (Horario horario : equipe.horariosFolga) {
+            st.append("\n");
+            st.append(horario);
+        }
         holder.binding.txtSubTitle.setText(st.toString());
         // ... outros campos a serem preenchidos
     }
