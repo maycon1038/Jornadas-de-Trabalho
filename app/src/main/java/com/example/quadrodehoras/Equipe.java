@@ -7,13 +7,16 @@ import java.util.List;
 public class Equipe {
 
 
-      String equipe;
+    String equipe;
 
-      Date dateStart;
+    String idDocJornadas;
+
+    Date dateStart;
     List<Horario> horariosTrabalho = new ArrayList<>();
     List<Horario> horariosFolga = new ArrayList<>();
 
-    public Equipe( String equipe, Date dateStart) {
+    public Equipe( String idDocJornadas, String equipe, Date dateStart) {
+        this.idDocJornadas = idDocJornadas;
         this.equipe = equipe;
         this.dateStart = dateStart;
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,7 @@ import java.util.Locale;
 
 public class EquipeFragment extends Fragment {
 
-    ArrayList<Jornada> listJornadas;
+    ArrayList<Jornadas> listJornadas;
     int equipesNecessarias = 0;
     private FragmentFirstBinding binding;
     private Calendar selectedDateTime;
@@ -71,7 +70,7 @@ public class EquipeFragment extends Fragment {
         listJnds = new ArrayList<>();
        // result = binding.txtResult;
         assert getArguments() != null;
-        listJornadas = getArguments().getParcelableArrayList("Jornada");
+        listJornadas = getArguments().getParcelableArrayList("Jornadas");
         System.out.println("listJornadas: " + listJornadas);
          equipeAdapter = new EquipeAdapter(listEquipes);
          recyclerView = binding.itemListPp;
@@ -101,38 +100,48 @@ public class EquipeFragment extends Fragment {
         RecyclerView recyclerView = dialog.findViewById(R.id.recycler_ajuda);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(dialog.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        SelectJornadaAdapter adapter = new SelectJornadaAdapter(listJornadas);
+        SelectJornadasAdapter adapter = new SelectJornadasAdapter(listJornadas);
         recyclerView.setAdapter(adapter);
         dialog.show();
         dialog.findViewById(R.id.button_selec_data).setOnClickListener(v1 -> showDateTimePicker());
         dialog.findViewById(R.id.button_add_Equipe).setOnClickListener(v13 -> {
 
             Date startDate = selectedDateTime.getTime();
-            List<Jornada> jornadasSelecionadas = adapter.getJornadasSelected();
-            int horasTrabalho =jornadasSelecionadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
-            int horasFolga =jornadasSelecionadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 12 horas + 12 horas
-            TotalHoursInDay = horasTrabalho / jornadasSelecionadas.size();
-            int totalTurnosNoDia = 24 / TotalHoursInDay;
-            String idDocJonada = concatenarIdsJornadas(jornadasSelecionadas);
-            System.out.println("idsjns: " + idDocJonada);
+            Jornadas jornadasSelecionada = adapter.getJornadasSelected();
 
-             int qtdEquipe = contarJornadasComMesmoId(listJnds,  idDocJonada) + 1;
+             if(jornadasSelecionada == null){
+                 Toast.makeText(requireContext(), "Nenhuma jornada selecionada.", Toast.LENGTH_SHORT).show();
+                 return;
+             }
+
+            int horasTrabalho = jornadasSelecionada.listJornadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
+            int horasFolga = jornadasSelecionada.listJornadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 12 horas + 12 horas
+            TotalHoursInDay = horasTrabalho / jornadasSelecionada.listJornadas.size();
+            int totalTurnosNoDia = 24 / TotalHoursInDay;
+            System.out.println("idsjns: " + jornadasSelecionada.getName());
+
+             int qtdEquipe = contarJornadasComMesmoId(listEquipes, jornadasSelecionada.getName()) ;
             equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
             if(qtdEquipe >= equipesNecessarias) {
-
                 Toast.makeText(requireContext(), "Você já possui a quantidade máxima de equipes", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Equipe equipe = new Equipe(  numberToLetter(qtdEquipe) + " ("+ idDocJonada +")", startDate);
+            Equipe equipe = new Equipe( jornadasSelecionada.getName(), numberToLetter(qtdEquipe) + " ("+ jornadasSelecionada.getName() +")", startDate);
 
             if(!listEquipes.isEmpty() && existeConflitoHorario(listEquipes, startDate, horasTrabalho + horasFolga)){
                 Toast.makeText(requireContext(), "Existe um conflito de horário.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            Equipe jaExiste = equipeJaAdicionadaInJornadaMesmaData(listEquipes, equipe);
+            if(jaExiste != null){
+                Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
+
+            for (Jornada jornadaAtual : jornadasSelecionada.listJornadas) {
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
                 String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : jornadaAtual.turno + "º Turno";
                 equipe.horariosTrabalho.add(new Horario(nomeTurno, jornadaAtual.turno, startDate, dataFimTrabalho));
@@ -141,15 +150,8 @@ public class EquipeFragment extends Fragment {
                 //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
                  startDate = dataFimFolga;
             }
-            Jornadas jaExiste = equipeJaAdicionadaInJornadaMesmaData(listJnds, startDate, idDocJonada);
-            if(jaExiste != null){
-                Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-          //  System.out.println("existeConflitoHorario: " + existeConflitoHorario(equipe));
-            Jornadas Jns = new Jornadas(idDocJonada, equipe.equipe, startDate, (ArrayList<Jornada>) jornadasSelecionadas);
-            listJnds.add(Jns);
+
             listEquipes.add(equipe);
             equipeAdapter.notifyItemInserted(listEquipes.size() - 1); // Notifica o adapter da mudança
             dialog.dismiss();
@@ -176,9 +178,9 @@ public class EquipeFragment extends Fragment {
         return false; // Nenhum conflito encontrado
     }
 
-    public String concatenarIdsJornadas(List<Jornada> jornadasSelecionadas) {
+/*    public String concatenarIdsJornadas(List<Jornada> jornadasSelecionadas) {
         StringBuilder idsConcatenados = new StringBuilder();
-        for (Jornada jornada : jornadasSelecionadas) {
+        for (Jornadas jornada : jornadasSelecionadas) {
             System.out.println("jornada: " + jornada.getIdDoc());
             idsConcatenados.append(jornada.getHrTrabalho());
             idsConcatenados.append("/");
@@ -191,7 +193,7 @@ public class EquipeFragment extends Fragment {
             idsConcatenados.delete(idsConcatenados.length() - 3, idsConcatenados.length());
         }
         return idsConcatenados.toString();
-    }
+    }*/
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -270,19 +272,19 @@ public class EquipeFragment extends Fragment {
         System.out.println(formattedDateTime);
     }
 
-    private Jornadas equipeJaAdicionadaInJornadaMesmaData(List<Jornadas> listJornadas, Date data, String idDocJornada) {
+    private Equipe equipeJaAdicionadaInJornadaMesmaData(List<Equipe> ListEquipe, Equipe equipe) {
         // Equipe já adicionada
-        if(listJornadas == null) return null;
-        return listJornadas.stream().filter(jornadas -> jornadas.getDataInicio().equals(data) && jornadas.getName().equals(idDocJornada) ).findFirst().orElse(null);
+        if(ListEquipe == null) return null;
+        return ListEquipe.stream().filter(eq ->   eq.idDocJornadas.equals(equipe.idDocJornadas)  && eq.dateStart.equals(equipe.dateStart)).findFirst().orElse(null);
         // Equipe não encontrada
     }
 
 
 
-    private int contarJornadasComMesmoId(List<Jornadas> listJornadas, String idDocJornada) {
-        int count = 0;
-        for (Jornadas jornada : listJornadas) {
-            if (jornada.getName().equals(idDocJornada)) {
+    private int contarJornadasComMesmoId(List<Equipe> ListEquipe, String idDocJornada) {
+        int count = 1;
+        for (Equipe eq : ListEquipe) {
+            if (eq.idDocJornadas.equals(idDocJornada)) {
                 count++;
             }
         }

@@ -92,7 +92,7 @@ public class JornadaFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("Jornada", jornada);
             NavHostFragment.findNavController(JornadaFragment.this)
-                    .navigate(R.id.action_SecondFragment_to_FirstFragment, bundle);
+                    .navigate(R.id.action_SecondFragment_to_jornadasFragment, bundle);
 
         });
     }

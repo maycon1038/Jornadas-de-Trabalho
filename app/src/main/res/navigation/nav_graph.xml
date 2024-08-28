@@ -21,8 +21,18 @@
         android:label="Cadastro de Jornadas"
         tools:layout="@layout/fragment_second">
 
+
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/action_SecondFragment_to_jornadasFragment"
+            app:destination="@id/jornadasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/jornadasFragment"
+        android:name="com.example.quadrodehoras.JornadasFragment"
+        tools:layout="@layout/fragment_jornadas"
+        android:label="JornadasFragment" >
+        <action
+            android:id="@+id/action_jornadasFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>
