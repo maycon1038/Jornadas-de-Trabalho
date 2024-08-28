@@ -6,6 +6,8 @@ import android.os.Parcelable;
 public class Jornada implements Parcelable {
 
    String idDoc;
+
+    int turno;
     int hrTrabalho;
     int hrFolgas;
 
@@ -14,7 +16,8 @@ public class Jornada implements Parcelable {
     }
 
 
-    public Jornada(String idDoc, int hrTrabalho, int hrFolgas) {
+    public Jornada(int turno, String idDoc, int hrTrabalho, int hrFolgas) {
+        this.turno = turno;
         this.idDoc = idDoc;
         this.hrTrabalho = hrTrabalho;
         this.hrFolgas = hrFolgas;

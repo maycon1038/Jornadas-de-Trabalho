@@ -37,25 +37,25 @@ public class JornadaFragment extends Fragment {
         ArrayList<Jornada> jornada  = new ArrayList<>();
 
 
-        novaJornada = new Jornada(numberToLetter(1), 12, 24);
+        novaJornada = new Jornada(1, numberToLetter(1), 12, 24);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(2), 12, 48);
+        novaJornada = new Jornada(2, numberToLetter(2), 12, 48);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(3), 12, 72);
+        novaJornada = new Jornada(1, numberToLetter(3), 12, 72);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(4), 8, 16);
+        novaJornada = new Jornada(1, numberToLetter(4), 8, 16);
         jornada.add(novaJornada);
 
-        novaJornada = new Jornada(numberToLetter(5), 6, 18);
+        novaJornada = new Jornada(1, numberToLetter(5), 6, 18);
         jornada.add(novaJornada);
 
 
-        novaJornada = new Jornada(numberToLetter(6), 24, 72);
+        novaJornada = new Jornada(0,numberToLetter(6), 24, 72);
         jornada.add(novaJornada);
-        novaJornada = new Jornada(numberToLetter(7), 12, 72);
+        novaJornada = new Jornada(1, numberToLetter(7), 12, 72);
         jornada.add(novaJornada);
 
 
@@ -67,19 +67,21 @@ public class JornadaFragment extends Fragment {
             // Validação dos campos de entrada (opcional, mas recomendado)
             String hrTrabalhoStr = binding.edtHrT1.getText().toString();
             String hrFolgaStr = binding.edtHrF1.getText().toString();
+            String textTurno = binding.edtTurno.getText().toString();
             if (hrTrabalhoStr.isEmpty() || hrFolgaStr.isEmpty()) {
                 // Exibe uma mensagem de erro ou toma outra ação apropriada
                 return;
             }
             int horasTrabalho = Integer.parseInt(hrTrabalhoStr);
             int horasFolga = Integer.parseInt(hrFolgaStr);
+            int Turno = Integer.parseInt(textTurno);
             if (jornadaExiste(jornada, horasTrabalho, horasFolga)) {
                 // Exibe uma mensagem informando que a jornada já existe
                 Toast.makeText(getContext(), "Esta jornada já existe!", Toast.LENGTH_SHORT).show();
 
                 return;
             }
-            novaJornada = new Jornada(numberToLetter(jornada.size() + 1), horasTrabalho, horasFolga);
+            novaJornada = new Jornada(Turno, numberToLetter(jornada.size() + 1), horasTrabalho, horasFolga);
             jornada.add(novaJornada);
             jornadaAdapter.notifyItemInserted(jornada.size() - 1); // Notifica o adapter da mudança
             System.out.println("jjornadaAdapter: " + jornadaAdapter.getItemCount());

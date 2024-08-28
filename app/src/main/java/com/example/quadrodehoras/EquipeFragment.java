@@ -35,9 +35,6 @@ public class EquipeFragment extends Fragment {
     private FragmentFirstBinding binding;
     private Calendar selectedDateTime;
     private int TotalHoursInDay;
-    private TextView result;
-    private String myJornada;
-    int indiceEquipe = 1;
     ArrayList<Equipe> listEquipes = new ArrayList<>();
     private RecyclerView recyclerView;
     private EquipeAdapter equipeAdapter;
@@ -127,25 +124,22 @@ public class EquipeFragment extends Fragment {
                 return;
             }
 
-            Equipe equipe = new Equipe(indiceEquipe,  numberToLetter(qtdEquipe) + " ("+ idDocJonada +")", startDate);
+            Equipe equipe = new Equipe(  numberToLetter(qtdEquipe) + " ("+ idDocJonada +")", startDate);
 
             if(!listEquipes.isEmpty() && existeConflitoHorario(listEquipes, startDate, horasTrabalho + horasFolga)){
                 Toast.makeText(requireContext(), "Existe um conflito de horário.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int indiceJornada = 1;
-            int qtdJornadas = (jornadasSelecionadas.size() + 1);
 
             for (Jornada jornadaAtual : adapter.getJornadasSelected()) {
                 Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
-                String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : indiceJornada + "º Turno";
-                equipe.horariosTrabalho.add(new Horario(nomeTurno, indiceJornada, startDate, dataFimTrabalho));
+                String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : jornadaAtual.turno + "º Turno";
+                equipe.horariosTrabalho.add(new Horario(nomeTurno, jornadaAtual.turno, startDate, dataFimTrabalho));
                 Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
-                equipe.horariosFolga.add(new Horario(nomeTurno, indiceJornada, dataFimTrabalho, dataFimFolga));
+                equipe.horariosFolga.add(new Horario(nomeTurno, jornadaAtual.turno, dataFimTrabalho, dataFimFolga));
                 //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
                  startDate = dataFimFolga;
-                indiceJornada = (indiceJornada + 1) % qtdJornadas; // Incrementa e mantém dentro do limite
             }
             Jornadas jaExiste = equipeJaAdicionadaInJornadaMesmaData(listJnds, startDate, idDocJonada);
             if(jaExiste != null){
