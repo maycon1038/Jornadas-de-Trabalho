@@ -122,14 +122,14 @@ public class EquipeFragment extends Fragment {
 
              int qtdEquipe = contarJornadasComMesmoId(listEquipes, jornadasSelecionada.getName()) ;
             equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
-            if(qtdEquipe >= equipesNecessarias) {
+            if(qtdEquipe > equipesNecessarias) {
                 Toast.makeText(requireContext(), "Você já possui a quantidade máxima de equipes", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             Equipe equipe = new Equipe( jornadasSelecionada.getName(), numberToLetter(qtdEquipe) + " ("+ jornadasSelecionada.getName() +")", startDate);
 
-            if(!listEquipes.isEmpty() && existeConflitoHorario(listEquipes, startDate, horasTrabalho + horasFolga)){
+            if(!listEquipes.isEmpty() && existeConflitoHorario(listEquipes, equipe, horasTrabalho + horasFolga)){
                 Toast.makeText(requireContext(), "Existe um conflito de horário.", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -158,23 +158,30 @@ public class EquipeFragment extends Fragment {
         });
     }
 
-    public boolean existeConflitoHorario(ArrayList<Equipe> equipes, Date dataStart2, int qtdHorasTrabalhoAndFolga) {
+    public boolean existeConflitoHorario(ArrayList<Equipe> equipes, Equipe novaEquipe, int qtdHorasTrabalhoAndFolga) {
 
-        Date dataStart = equipes.get(0).horariosTrabalho.get(0).horaInicio;
-         do{
+
+
+        if(equipes.isEmpty()){
+            return false;
+        }
+
+
              for (Equipe equipe: equipes) {
-                  dataStart = equipe.horariosTrabalho.get(0).horaInicio;
-                 dataStart = addTimeToDate(dataStart,qtdHorasTrabalhoAndFolga,0 );
+                 Date dataStart = equipe.dateStart;
+                 do{
+                 dataStart = addTimeToDate(dataStart, qtdHorasTrabalhoAndFolga,0 );
                  String myFormat = "dd/MM/yyyy HH:mm"; //In which you need put here
                  SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt", "BR"));
-                 System.out.println("dataStart1: " + sdf.format(dataStart) + "dataStart2: " + sdf.format(dataStart2));
-                 if(dataStart.equals(dataStart2)){
-                     return true;
-                 }
+                 System.out.println("dataStart1: " + sdf.format(dataStart) + "dataStart2: " + sdf.format(novaEquipe.dateStart));
+                     if(dataStart.equals(novaEquipe.dateStart)){
+                         return true;
+                     }
+                 }while (novaEquipe.dateStart.after(dataStart));
              }
 
 
-         }while (dataStart2.after(dataStart));
+
         return false; // Nenhum conflito encontrado
     }
 
