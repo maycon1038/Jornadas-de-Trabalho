@@ -28,10 +28,7 @@ public class JornadasFragment extends Fragment {
     ArrayList<Jornadas> listJnds;
 
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         binding = FragmentJornadasBinding.inflate(inflater, container, false);
         return binding.getRoot();
