@@ -75,12 +75,12 @@ public class JornadaFragment extends Fragment {
             int horasTrabalho = Integer.parseInt(hrTrabalhoStr);
             int horasFolga = Integer.parseInt(hrFolgaStr);
             int Turno = Integer.parseInt(textTurno);
-            if (jornadaExiste(jornada, horasTrabalho, horasFolga)) {
+           /* if (jornadaExiste(jornada, horasTrabalho, horasFolga)) {
                 // Exibe uma mensagem informando que a jornada já existe
                 Toast.makeText(getContext(), "Esta jornada já existe!", Toast.LENGTH_SHORT).show();
 
                 return;
-            }
+            }*/
             novaJornada = new Jornada(Turno, numberToLetter(jornada.size() + 1), horasTrabalho, horasFolga);
             jornada.add(novaJornada);
             jornadaAdapter.notifyItemInserted(jornada.size() - 1); // Notifica o adapter da mudança

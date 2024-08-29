@@ -12,10 +12,10 @@ public class Equipe {
     String idDocJornadas;
 
     Date dateStart;
-    List<Horario> horariosTrabalho = new ArrayList<>();
-    List<Horario> horariosFolga = new ArrayList<>();
 
-    public Equipe( String idDocJornadas, String equipe, Date dateStart) {
+    Jornadas jornadas;
+
+    public Equipe(String idDocJornadas, String equipe, Date dateStart) {
         this.idDocJornadas = idDocJornadas;
         this.equipe = equipe;
         this.dateStart = dateStart;

@@ -116,12 +116,14 @@ public class EquipeFragment extends Fragment {
 
             int horasTrabalho = jornadasSelecionada.listJornadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
             int horasFolga = jornadasSelecionada.listJornadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 12 horas + 12 horas
+
             TotalHoursInDay = horasTrabalho / jornadasSelecionada.listJornadas.size();
-            int totalTurnosNoDia = 24 / TotalHoursInDay;
+
             System.out.println("idsjns: " + jornadasSelecionada.getName());
 
              int qtdEquipe = contarJornadasComMesmoId(listEquipes, jornadasSelecionada.getName()) ;
             equipesNecessarias = calcularEquipesParaFolga(horasTrabalho, horasFolga, listJornadas.size());
+
             if(qtdEquipe > equipesNecessarias) {
                 Toast.makeText(requireContext(), "Você já possui a quantidade máxima de equipes", Toast.LENGTH_SHORT).show();
                 return;
@@ -139,18 +141,7 @@ public class EquipeFragment extends Fragment {
                 Toast.makeText(requireContext(), "Já existe uma equipe adicionada configuração de jornadas.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-
-            for (Jornada jornadaAtual : jornadasSelecionada.listJornadas) {
-                Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
-                String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : jornadaAtual.turno + "º Turno";
-                equipe.horariosTrabalho.add(new Horario(nomeTurno, jornadaAtual.turno, startDate, dataFimTrabalho));
-                Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
-                equipe.horariosFolga.add(new Horario(nomeTurno, jornadaAtual.turno, dataFimTrabalho, dataFimFolga));
-                //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
-                 startDate = dataFimFolga;
-            }
-
+            equipe.jornadas = jornadasSelecionada;
 
             listEquipes.add(equipe);
             equipeAdapter.notifyItemInserted(listEquipes.size() - 1); // Notifica o adapter da mudança
@@ -161,11 +152,9 @@ public class EquipeFragment extends Fragment {
     public boolean existeConflitoHorario(ArrayList<Equipe> equipes, Equipe novaEquipe, int qtdHorasTrabalhoAndFolga) {
 
 
-
         if(equipes.isEmpty()){
             return false;
         }
-
 
              for (Equipe equipe: equipes) {
                  Date dataStart = equipe.dateStart;

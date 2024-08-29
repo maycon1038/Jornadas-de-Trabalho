@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.quadrodehoras.databinding.ModelEquipeItemBinding; // Substitua pelo caminho correto do seu layout
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeViewHolder> {
@@ -37,23 +39,42 @@ public class EquipeAdapter extends RecyclerView.Adapter<EquipeAdapter.EquipeView
         Equipe equipe = equipes.get(position);
         // Preencha os elementos do layout com os dados da equipe
         holder.binding.txtTitle.setText("Equipe: " + equipe.equipe);
+        int horasTrabalho = equipe.jornadas.listJornadas.stream().mapToInt(Jornada::getHrTrabalho).sum(); // 12 horas + 12 horas
+        int horasFolga = equipe.jornadas.listJornadas.stream().mapToInt(Jornada::getHrFolgas).sum(); // 12 horas + 12 horas
+        int TotalHoursInDay = horasTrabalho / equipe.jornadas.listJornadas.size();
+        int totalTurnosNoDia = 24 / TotalHoursInDay;
 
+        Date startDate = equipe.dateStart;
         StringBuilder st = new StringBuilder();
         st.append("Horários de trabalho:");
-        for (Horario horario : equipe.horariosTrabalho) {
+        for (Jornada jornadaAtual : equipe.jornadas.listJornadas) {
+            Date dataFimTrabalho = addTimeToDate(startDate, jornadaAtual.getHrTrabalho(), 0);
+            String nomeTurno = totalTurnosNoDia == 1 ? "Turno Único (24h)" : jornadaAtual.turno + "º Turno";
+
+
+
+            Horario ht = new Horario(nomeTurno, jornadaAtual.turno, startDate, dataFimTrabalho);
+            Date dataFimFolga = addTimeToDate(dataFimTrabalho, jornadaAtual.getHrFolgas(), 0);
+            Horario hf =new Horario(nomeTurno, jornadaAtual.turno, dataFimTrabalho, dataFimFolga);
+            //System.out.println("dataInicial: " + dateFormat.format(startDate)); // Pode ser removido em produção
             st.append("\n");
-            st.append(horario);
-        }
-        st.append("\nHorários de Folga:");
-        for (Horario horario : equipe.horariosFolga) {
-            st.append("\n");
-            st.append(horario);
+            st.append(ht);
+            startDate = dataFimFolga;
         }
         holder.binding.txtSubTitle.setText(st.toString());
         // ... outros campos a serem preenchidos
     }
 
+    private Date addTimeToDate(Date date, int hoursToAdd, int minutesToAdd) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
 
+        calendar.add(Calendar.HOUR_OF_DAY, hoursToAdd);
+        calendar.add(Calendar.MINUTE, minutesToAdd);
+        calendar.add(Calendar.SECOND, 0);
+
+        return calendar.getTime();
+    }
 
 
     @Override
