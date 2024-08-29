@@ -30,7 +30,11 @@ public class JornadaAdapter extends RecyclerView.Adapter<JornadaAdapter.JornadaV
         int horasTrabalho = jornada.getHrTrabalho();
         int horasFolga = jornada.getHrFolgas();
         holder.binding.txtTitle.setText("Jornada: "+jornada.idDoc);
-        holder.binding.txtSubTitle.setText(horasTrabalho + "/" + horasFolga);
+        if(jornada.turno > 0){
+            holder.binding.txtSubTitle.setText( jornada.turno + "º Turno - " + horasTrabalho + "/" + horasFolga);
+        }else {
+            holder.binding.txtSubTitle.setText("Turno único 24h" + horasTrabalho + "/" + horasFolga);
+        }
     }
 
     @Override
